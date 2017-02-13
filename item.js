@@ -1,8 +1,10 @@
 var iframe;
 var xmlhttp = new XMLHttpRequest();
 var url = "http://jedaube:eleanor81@127.0.0.1:8000/items?name=";
-
-function createIframe(nameHtml, descHtml, pkHtml) {
+var nodef = "This item is not defined in Corporate Information, click below to define";
+var fulldef = "full definition »</a>"
+var pkd = "new/"
+function createIframe(nameHtml, descHtml, pkd) {
 
   //don't add a frame within a frame
   var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
@@ -37,9 +39,9 @@ function createIframe(nameHtml, descHtml, pkHtml) {
           + "<br /><br /><hr />"
           + "<div align=\"right\">" 
           + "<a target=\"_blank\" href=\"http://127.0.0.1:8000/info/"
-          + pkHtml
+          + pkd
           + "\">"
-          + "full definition »</a>"
+          + fulldef
           + "</div>" 
           + "</body>";
     iframe.contentWindow.document.open();
@@ -47,6 +49,8 @@ function createIframe(nameHtml, descHtml, pkHtml) {
     //add event listener inside of iframe for word lookups inside of definitions 
     iframe.contentWindow.document.addEventListener('dblclick',function(){lookupSelection(iframe.contentWindow)}); 
     iframe.contentWindow.scrollTo(0,0);
+    pkd = "new/";
+    fulldef = "full definition »</a>"
     iframe.contentWindow.document.close();
 
     //add event to delete iframe upon main window click
@@ -75,6 +79,7 @@ function lookupSelection(lookupWindow) {
         urlForAPI = url + word;
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200 ) {
+                console.log(this.responseText);
                 myFunction(this.responseText);
             }
         }
@@ -82,16 +87,22 @@ function lookupSelection(lookupWindow) {
         xmlhttp.send();
         function myFunction(response) {
            var item = JSON.parse(response);
-           var name = item.results[0].name;
-           var description = item.results[0].description;
-           var pk = item.results[0].pk;
-           nameH = name + ":  ";
-           descH = description;
+           if (item.count == 0) {
+               fulldef = "create a definition »</a>"
+               createIframe(word, nodef, pkd);
+           }
+           else { 
+             var name = item.results[0].name;
+             var description = item.results[0].description;
+             pkd = item.results[0].pk;
+             nameH = name + ":  ";
+             descH = description;
 
-        console.log(item);    
-        console.log(xmlhttp.status);
-        console.log(xmlhttp.statusText);
-        createIframe(nameH, descH, pk);  
+             console.log(item);    
+             console.log(xmlhttp.status);
+             console.log(xmlhttp.statusText);
+             createIframe(nameH, descH, pkd);  
+           }
         }
       }
       else 
