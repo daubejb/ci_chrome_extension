@@ -1,9 +1,13 @@
 var iframe;
 var xmlhttp = new XMLHttpRequest();
 var url = "http://jedaube:eleanor81@127.0.0.1:8000/items?name=";
+
+// ********** janky -- need refactoring
 var nodef = "This item is not defined in Corporate Information, click below to define";
 var fulldef = "full definition »</a>"
 var pkd = "new/"
+// ********** end janky -- need refactoring
+
 function createIframe(nameHtml, descHtml, pkd) {
 
   //don't add a frame within a frame
@@ -49,8 +53,12 @@ function createIframe(nameHtml, descHtml, pkd) {
     //add event listener inside of iframe for word lookups inside of definitions 
     iframe.contentWindow.document.addEventListener('dblclick',function(){lookupSelection(iframe.contentWindow)}); 
     iframe.contentWindow.scrollTo(0,0);
+    
+    // ********** janky -- need refactoring
     pkd = "new/";
     fulldef = "full definition »</a>"
+    // ********** end janky -- need refactoring
+      //
     iframe.contentWindow.document.close();
 
     //add event to delete iframe upon main window click
@@ -87,10 +95,13 @@ function lookupSelection(lookupWindow) {
         xmlhttp.send();
         function myFunction(response) {
            var item = JSON.parse(response);
+           
+           // ********** janky -- need refactoring 
            if (item.count == 0) {
                fulldef = "create a definition »</a>"
                createIframe(word, nodef, pkd);
            }
+           // ********** end janky -- need refactoring
            else { 
              var name = item.results[0].name;
              var description = item.results[0].description;
