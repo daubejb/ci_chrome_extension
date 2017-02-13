@@ -2,7 +2,7 @@ var iframe;
 var xmlhttp = new XMLHttpRequest();
 var url = "http://jedaube:eleanor81@127.0.0.1:8000/items?name=";
 
-function createIframe(nameHtml, descHtml) {
+function createIframe(nameHtml, descHtml, pkHtml) {
 
   //don't add a frame within a frame
   var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
@@ -27,7 +27,21 @@ function createIframe(nameHtml, descHtml) {
     }
 
     //insert definition html in iframe
-    defHtml = "<body style=\"font-family:sans-serif;font-size:14px;\">" + nameHtml + "<br />" + descHtml + "<a target=\"_blank\" href=\"http://127.0.0.1:8000/info/\">More »</a></body>";
+    defHtml = "<body style=\"font-family:sans-serif;font-size:14px;\">" 
+          + "<p style=\"font-weight:bold; font-size:16px;\">" 
+          + nameHtml
+          + "</p>"
+          + "<hr />"
+          + "<br />" 
+          + descHtml
+          + "<br /><br /><hr />"
+          + "<div align=\"right\">" 
+          + "<a target=\"_blank\" href=\"http://127.0.0.1:8000/info/"
+          + pkHtml
+          + "\">"
+          + "full definition »</a>"
+          + "</div>" 
+          + "</body>";
     iframe.contentWindow.document.open();
     iframe.contentWindow.document.write(defHtml);
     //add event listener inside of iframe for word lookups inside of definitions 
@@ -70,13 +84,14 @@ function lookupSelection(lookupWindow) {
            var item = JSON.parse(response);
            var name = item.results[0].name;
            var description = item.results[0].description;
-           nameH = "<div>" + name + ":  " + "</div>";
-           descH = "<div>" + description + "</div>";
+           var pk = item.results[0].pk;
+           nameH = name + ":  ";
+           descH = description;
 
         console.log(item);    
         console.log(xmlhttp.status);
         console.log(xmlhttp.statusText);
-        createIframe(nameH, descH);  
+        createIframe(nameH, descH, pk);  
         }
       }
       else 
