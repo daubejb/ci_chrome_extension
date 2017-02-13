@@ -58,13 +58,13 @@ function lookupSelection(lookupWindow) {
     if (word.length > 0) //check to make sure word doesn't include any spaces and has nonzero length
       { 
 	    console.log("selection: [" + word + "]");
-        url += word; 
+        urlForAPI = url + word;
         xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200 ) {
                 myFunction(this.responseText);
             }
         }
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open("GET", urlForAPI, true);
         xmlhttp.send();
         function myFunction(response) {
            var item = JSON.parse(response);
