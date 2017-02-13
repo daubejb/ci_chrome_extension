@@ -2,7 +2,7 @@ var iframe;
 var xmlhttp = new XMLHttpRequest();
 var url = "http://jedaube:eleanor81@127.0.0.1:8000/items?name=";
 
-function createIframe(defHtml) {
+function createIframe(nameHtml, descHtml) {
 
   //don't add a frame within a frame
   var extensionOrigin = 'chrome-extension://' + chrome.runtime.id;
@@ -27,7 +27,7 @@ function createIframe(defHtml) {
     }
 
     //insert definition html in iframe
-    defHtml = "<body style=\"font-family:sans-serif;font-size:14px;\">" + defHtml + "</body>";
+    defHtml = "<body style=\"font-family:sans-serif;font-size:14px;\">" + nameHtml + "<br />" + descHtml + "<a target=\"_blank\" href=\"http://127.0.0.1:8000/info/\">More »</a></body>";
     iframe.contentWindow.document.open();
     iframe.contentWindow.document.write(defHtml);
     //add event listener inside of iframe for word lookups inside of definitions 
@@ -70,12 +70,13 @@ function lookupSelection(lookupWindow) {
            var item = JSON.parse(response);
            var name = item.results[0].name;
            var description = item.results[0].description;
-           out = "<div>" + name + ":  " + description + "</div>";
+           nameH = "<div>" + name + ":  " + "</div>";
+           descH = "<div>" + description + "</div>";
 
         console.log(item);    
         console.log(xmlhttp.status);
         console.log(xmlhttp.statusText);
-        createIframe(out);  
+        createIframe(nameH, descH);  
         }
       }
       else 
