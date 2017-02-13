@@ -1,4 +1,6 @@
 var iframe;
+var xmlhttp = new XMLHttpRequest();
+var url = "http://jedaube:eleanor81@127.0.0.1:8000/items?name=ABM";
 
 function createIframe(defHtml) {
 
@@ -56,8 +58,25 @@ function lookupSelection(lookupWindow) {
     if (word.length > 0) //check to make sure word doesn't include any spaces and has nonzero length
       { 
 	    console.log("selection: [" + word + "]");
-        createIframe(word);  
+       
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200 ) {
+                myFunction(this.responseText);
+            }
+        }
+        xmlhttp.open("GET", url, false);
+        xmlhttp.send();
+        function myFunction(response) {
+           var arr = JSON.parse(response);
+           var i;
+           var out = "<div>"
 
+           out += arr[0].name + ":  " + arr[0].description + "</div>";
+
+        console.log(xmlhttp.status);
+        console.log(xmlhttp.statusText);
+        createIframe(out);  
+        }
       }
       else 
       {
